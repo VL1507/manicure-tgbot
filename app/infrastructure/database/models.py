@@ -1,10 +1,8 @@
-import datetime
+from typing import List
 
-from typing import List, Optional
-
-from sqlalchemy import ForeignKey, Integer, String, TIMESTAMP, Text
+from sqlalchemy import Date, ForeignKey, Integer, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
+import datetime
 
 from sqlalchemy.ext.asyncio import AsyncAttrs
 
@@ -13,80 +11,42 @@ class Base(AsyncAttrs, DeclarativeBase):
     pass
 
 
-class Activities(Base):
-    __tablename__ = "activities"
+class Appointments(Base):
+    __tablename__ = "appointments"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
+    user_id: Mapped[int] = mapped_column(Integer)
+    date: Mapped[datetime.date] = mapped_column(Date)
+    time_start: Mapped[str] = mapped_column(String)
+    time_end: Mapped[str] = mapped_column(String)
+
+    service_to_appointments: Mapped[List["ServiceToAppointments"]] = relationship(
+        "ServiceToAppointments", back_populates="appointment"
+    )
+
+
+class Services(Base):
+    __tablename__ = "services"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
     name: Mapped[str] = mapped_column(String)
+    duration_minutes: Mapped[int] = mapped_column(Integer)
 
-    mood_activities: Mapped[List["MoodActivities"]] = relationship(
-        "MoodActivities", back_populates="activities"
+    service_to_appointments: Mapped[List["ServiceToAppointments"]] = relationship(
+        "ServiceToAppointments", back_populates="service"
     )
 
 
-class Emotions(Base):
-    __tablename__ = "emotions"
+class ServiceToAppointments(Base):
+    __tablename__ = "service_to_appointments"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
-    name: Mapped[str] = mapped_column(String)
-    color_hex: Mapped[str] = mapped_column(String)
+    service_id: Mapped[int] = mapped_column(ForeignKey("services.id"))
+    appointment_id: Mapped[int] = mapped_column(ForeignKey("appointments.id"))
 
-    mood_emotions: Mapped[List["MoodEmotions"]] = relationship(
-        "MoodEmotions", back_populates="emotion"
+    appointment: Mapped["Appointments"] = relationship(
+        "Appointments", back_populates="service_to_appointments"
     )
-
-
-class User(Base):
-    __tablename__ = "user"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
-    email: Mapped[str] = mapped_column(String, unique=True)
-    password_hash: Mapped[str] = mapped_column(String)
-    create_at: Mapped[datetime.datetime] = mapped_column(TIMESTAMP)
-
-    mood: Mapped[List["Mood"]] = relationship("Mood", back_populates="user")
-
-
-class Mood(Base):
-    __tablename__ = "mood"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    score: Mapped[int] = mapped_column(Integer)
-    create_at: Mapped[datetime.datetime] = mapped_column(TIMESTAMP)
-    update_at: Mapped[datetime.datetime] = mapped_column(TIMESTAMP)
-    note: Mapped[Optional[str]] = mapped_column(Text)
-
-    user: Mapped["User"] = relationship("User", back_populates="mood")
-    mood_activities: Mapped[List["MoodActivities"]] = relationship(
-        "MoodActivities", back_populates="mood"
+    service: Mapped["Services"] = relationship(
+        "Services", back_populates="service_to_appointments"
     )
-    mood_emotions: Mapped[List["MoodEmotions"]] = relationship(
-        "MoodEmotions", back_populates="mood"
-    )
-
-
-class MoodActivities(Base):
-    __tablename__ = "mood_activities"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
-    activities_id: Mapped[int] = mapped_column(ForeignKey("activities.id"))
-    mood_id: Mapped[int] = mapped_column(ForeignKey("mood.id"))
-
-    activities: Mapped["Activities"] = relationship(
-        "Activities", back_populates="mood_activities"
-    )
-    mood: Mapped["Mood"] = relationship("Mood", back_populates="mood_activities")
-
-
-class MoodEmotions(Base):
-    __tablename__ = "mood_emotions"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
-    emotion_id: Mapped[int] = mapped_column(ForeignKey("emotions.id"))
-    mood_id: Mapped[int] = mapped_column(ForeignKey("mood.id"))
-
-    emotion: Mapped["Emotions"] = relationship(
-        "Emotions", back_populates="mood_emotions"
-    )
-    mood: Mapped["Mood"] = relationship("Mood", back_populates="mood_emotions")
