@@ -1,14 +1,18 @@
-import re
 import asyncio
 import datetime
+import re
 
-from aiogram import types, F, Router
+from aiogram import F, Router, types
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-
 from telegram.handlers.commands import Order
-from telegram.keyboards.keyboard_generator import inline_keyboard_generator, reply_keyboard_generator, kb_clear
+from telegram.keyboards.keyboard_generator import (
+    inline_keyboard_generator,
+    kb_clear,
+    reply_keyboard_generator,
+)
+
 from Database import Database
 
 router_new_order = Router()
@@ -31,13 +35,10 @@ MONTHS = {
 
 back_deny = {"Назад": "back", "Отмена": "deny"}
 kb_back_deny = asyncio.run(inline_keyboard_generator(back_deny, (1, 1)))
-kb_apply_back_deny = asyncio.run(inline_keyboard_generator(
-    {
-        "Подтвердить": "approve",
-        "Назад": "back",
-        "Отмена": "deny"
-    },
-    (1, 1, 1))
+kb_apply_back_deny = asyncio.run(
+    inline_keyboard_generator(
+        {"Подтвердить": "approve", "Назад": "back", "Отмена": "deny"}, (1, 1, 1)
+    )
 )
 
 
@@ -45,7 +46,9 @@ kb_apply_back_deny = asyncio.run(inline_keyboard_generator(
 @router_new_order.callback_query(F.data == "order")
 @router_new_order.callback_query(Order.service, F.data == "back")
 async def start_new_order(callback: types.CallbackQuery, state: FSMContext) -> None:
-    kb_day = await inline_keyboard_generator({"Сегодня": "today", "Завтра": "tomorrow", "Отмена": "deny"})
+    kb_day = await inline_keyboard_generator(
+        {"Сегодня": "today", "Завтра": "tomorrow", "Отмена": "deny"}
+    )
 
     text = f"На какой день запишемся?"
     await callback.message.edit_text(text, reply_markup=kb_day)
@@ -80,10 +83,7 @@ async def choose_service(callback: types.CallbackQuery, state: FSMContext) -> No
     list_of_services = await Database.get_services()
     if not list_of_services:
         text = f"Нет услуг на данный момент"
-        await callback.message.edit_text(
-            text,
-            reply_markup=kb_back_deny
-        )
+        await callback.message.edit_text(text, reply_markup=kb_back_deny)
         await state.set_state(Order.service)
         return
 
@@ -104,15 +104,8 @@ async def choose_service(callback: types.CallbackQuery, state: FSMContext) -> No
 
     kb_services = await inline_keyboard_generator(dict_kb, sizes)
 
-    text = (
-        f"Запись на {day} ({date})\n"
-        f"Выберите желаемую услугу:"
-    )
-    await callback.message.edit_text(
-        text,
-        reply_markup=kb_services
-
-    )
+    text = f"Запись на {day} ({date})\nВыберите желаемую услугу:"
+    await callback.message.edit_text(text, reply_markup=kb_services)
     await state.set_state(Order.service)
 
 
@@ -127,7 +120,9 @@ async def show_appointment(callback: types.CallbackQuery, state: FSMContext) -> 
         else:
             service = callback.data
 
-        service_id = next((k for k, v in dict_of_services.items() if service in v), None)
+        service_id = next(
+            (k for k, v in dict_of_services.items() if service in v), None
+        )
         if service_id is not None:
             duration = dict_of_services[service_id][1]
             day = await state.get_value("day")
@@ -138,13 +133,9 @@ async def show_appointment(callback: types.CallbackQuery, state: FSMContext) -> 
                 f"Услуга: {service}\n"
                 f"Длительность: {duration}\n"
                 f"Стоимость: от 1200\n\n"
-
                 f"Номер мастера для уточнения: 89999999999"
             )
-            await callback.message.edit_text(
-                text,
-                reply_markup=kb_apply_back_deny
-            )
+            await callback.message.edit_text(text, reply_markup=kb_apply_back_deny)
             await state.update_data(service_id=service_id)
             await state.update_data(service=service)
             await state.update_data(duration=duration)
@@ -154,7 +145,9 @@ async def show_appointment(callback: types.CallbackQuery, state: FSMContext) -> 
 
 # Вывод подтвержденной записи
 @router_new_order.callback_query(Order.approved, F.data == "approve")
-async def approved_appointment(callback: types.CallbackQuery, state: FSMContext) -> None:
+async def approved_appointment(
+    callback: types.CallbackQuery, state: FSMContext
+) -> None:
     dict_of_services = await state.get_value("dict_of_services")
     if dict_of_services:
         service_id = await state.get_value("service_id")
@@ -163,11 +156,7 @@ async def approved_appointment(callback: types.CallbackQuery, state: FSMContext)
         date = await state.get_value("date")
 
         await Database.insert_appointment(
-            callback.from_user.id,
-            service_id,
-            date,
-            "0",
-            duration
+            callback.from_user.id, service_id, date, "0", duration
         )
 
         text = (
@@ -175,11 +164,7 @@ async def approved_appointment(callback: types.CallbackQuery, state: FSMContext)
             f"Длительность: {duration}\n"
             f"Стоимость: от 1200\n"
             f"Адрес: г.Уфа, ул. Маршала Жукова, дом 15, квартира 1\n\n"
-
             f"Номер мастера: 89999999999"
         )
-        await callback.message.edit_text(
-            text,
-            reply_markup=kb_apply_back_deny
-        )
+        await callback.message.edit_text(text, reply_markup=kb_apply_back_deny)
         await state.set_state(Order.ok)
