@@ -4,7 +4,7 @@ from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from telegram.keyboards.keyboard_generator import inline_keyboard_generator
+from keyboards.keyboard_generator import inline_keyboard_generator
 
 router_commands = Router()
 
@@ -21,7 +21,7 @@ class Order(StatesGroup):
 @router_commands.callback_query(F.data == "deny")
 @router_commands.callback_query(Order.ok, F.data == "approve")
 async def start(update: types.Message | types.CallbackQuery, state: FSMContext) -> None:
-    if not await state.get_state() is None:
+    if await state.get_state() is not None:
         await state.clear()
 
     kb_order = await inline_keyboard_generator({"Записаться": "order"})
@@ -37,12 +37,12 @@ async def start(update: types.Message | types.CallbackQuery, state: FSMContext) 
                 await asyncio.sleep(1)
                 seconds -= 1
         await update.message.edit_text(
-            f"Привет!\nЭто бот для записи к мастеру салона красоту 'Мадина'!",
+            "Привет!\nЭто бот для записи к мастеру салона красоту 'Мадина'!",
             reply_markup=kb_order,
         )
     elif type(update) is types.Message:
         await update.delete()
         await update.answer(
-            f"Привет!\nЭто бот для записи к мастеру салона красоту 'Мадина'!",
+            "Привет!\nЭто бот для записи к мастеру салона красоту 'Мадина'!",
             reply_markup=kb_order,
         )
