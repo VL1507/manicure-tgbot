@@ -1,5 +1,5 @@
 # Работа с БД
 
-uv run sqlacodegen --outfile models.py sqlite:///mood.db
+uv run sqlacodegen --outfile models.py sqlite:///manicure.db
 
-https://www.drawdb.app/editor?shareId=3b8e9c2b383a203848aca1b4eb11de55
+https://www.drawdb.app/editor?shareId=4464e87003b09d766e7017894e64c999
