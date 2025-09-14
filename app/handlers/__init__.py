@@ -2,8 +2,7 @@ __all__ = ("router",)
 
 from aiogram import Router
 
-from handlers import other_message
-from handlers import order
+from handlers import order, other_message
 
 router = Router(name=__name__)
 
