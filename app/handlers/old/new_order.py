@@ -1,19 +1,12 @@
 import asyncio
 import datetime
-import re
 
 from aiogram import F, Router, types
-from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
-from telegram.handlers.commands import Order
-from telegram.keyboards.keyboard_generator import (
-    inline_keyboard_generator,
-    kb_clear,
-    reply_keyboard_generator,
-)
+from keyboards.keyboard_generator import inline_keyboard_generator
 
 from app.Database import Database
+from app.handlers.old.commands import Order
 
 router_new_order = Router()
 
@@ -50,7 +43,7 @@ async def start_new_order(callback: types.CallbackQuery, state: FSMContext) -> N
         {"Сегодня": "today", "Завтра": "tomorrow", "Отмена": "deny"}
     )
 
-    text = f"На какой день запишемся?"
+    text = "На какой день запишемся?"
     await callback.message.edit_text(text, reply_markup=kb_day)
     await state.set_state(Order.day)
 
@@ -82,7 +75,7 @@ async def choose_service(callback: types.CallbackQuery, state: FSMContext) -> No
 
     list_of_services = await Database.get_services()
     if not list_of_services:
-        text = f"Нет услуг на данный момент"
+        text = "Нет услуг на данный момент"
         await callback.message.edit_text(text, reply_markup=kb_back_deny)
         await state.set_state(Order.service)
         return
