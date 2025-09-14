@@ -1,5 +1,5 @@
 [project]
-name = "tg-test"
+name = "manicure-tgbot"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,6 +8,7 @@ dependencies = [
     "aiogram>=3.22.0",
     "aiosqlite>=0.21.0",
     "dotenv>=0.9.9",
+    "pydantic-settings>=2.10.1",
 ]
 
 [dependency-groups]
