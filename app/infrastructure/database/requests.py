@@ -21,7 +21,7 @@ async def get_service_by_id(service_id: int) -> Services | None:
         return service.scalar()
 
 
-async def get_available_slots(date: date, work_duration: int):
+async def get_available_slots(date: date, work_duration: int) -> list[tuple[str, str]]:
     async with get_db_session() as session:
         stmt = select(Appointments).where(Appointments.date == date)
         result = await session.execute(stmt)
@@ -37,7 +37,7 @@ async def get_available_slots(date: date, work_duration: int):
 
             booked_intervals.append((start_time_minutes, end_time_minutes))
 
-        available_slots = []
+        available_slots: list[tuple[str, str]] = []
         work_start_minutes = WORK_TIME_START * 60
         work_end_minutes = WORK_TIME_END * 60
 
@@ -61,5 +61,5 @@ async def get_available_slots(date: date, work_duration: int):
                 available_slots.append(
                     (start_time.strftime("%H:%M"), end_time.strftime("%H:%M"))
                 )
-                
+
         return available_slots
