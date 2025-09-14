@@ -16,4 +16,5 @@ dev = [
     "mypy>=1.18.1",
     "pytest>=8.4.2",
     "ruff>=0.13.0",
+    "sqlacodegen>=3.0.0",
 ]
