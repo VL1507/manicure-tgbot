@@ -30,6 +30,7 @@ class Services(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
     name: Mapped[str] = mapped_column(String)
     duration_minutes: Mapped[int] = mapped_column(Integer)
+    price: Mapped[int] = mapped_column(Integer)
 
     service_to_appointments: Mapped[List["ServiceToAppointments"]] = relationship(
         "ServiceToAppointments", back_populates="service"

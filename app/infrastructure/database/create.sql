@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS
         "id" INTEGER NOT NULL UNIQUE,
         "name" VARCHAR NOT NULL,
         "duration_minutes" INTEGER NOT NULL,
+        "price" INTEGER NOT NULL,
         PRIMARY KEY ("id")
     );
 
