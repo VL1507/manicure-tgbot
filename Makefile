@@ -1,6 +1,6 @@
 # app
 runapp:
-	uv run main.py
+	uv run app/main.py
 
 format:
 	uv run ruff check --select I --fix
