@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-from app.config import settings
+from config import settings
 
 from handlers import router as main_router
 
@@ -17,7 +17,7 @@ async def main():
     dp.include_router(main_router)
 
     bot = Bot(
-        token=settings.BOT_TOKEN,
+        token=settings.BOT.TOKEN,
         default=DefaultBotProperties(
             parse_mode=ParseMode.HTML, link_preview_is_disabled=True
         ),
