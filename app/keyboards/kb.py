@@ -34,7 +34,7 @@ def service_keyboard(services: list[Services]) -> InlineKeyboardMarkup:
         inline_keyboard.append(kb_service)
 
     inline_keyboard.append(
-        [InlineKeyboardButton(text="Готово", callback_data="next_service")]
+        [InlineKeyboardButton(text="Готово", callback_data="next_from_service")]
     )
 
     inline_keyboard.append(
@@ -42,3 +42,6 @@ def service_keyboard(services: list[Services]) -> InlineKeyboardMarkup:
     )
 
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+
+
+
