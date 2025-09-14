@@ -13,7 +13,7 @@ from telegram.keyboards.keyboard_generator import (
     reply_keyboard_generator,
 )
 
-from Database import Database
+from app.Database import Database
 
 router_new_order = Router()
 

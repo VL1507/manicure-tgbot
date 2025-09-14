@@ -5,9 +5,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-from config import settings
+from app.config import settings
 
-from routers import router as main_router
+from handlers import router as main_router
 
 
 async def main():
