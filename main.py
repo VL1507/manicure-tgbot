@@ -1,24 +1,23 @@
-import os
 import asyncio
+import logging
 
-from dotenv import find_dotenv, load_dotenv
-from aiogram import Dispatcher, Bot
-from aiogram.enums import ParseMode
+from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 
-from telegram.handlers import commands, new_order
+from config import settings
 
-
-load_dotenv(find_dotenv())
-TOKEN = os.getenv("TOKEN")
+from routers import router as main_router
 
 
 async def main():
+    logging.basicConfig(level=logging.INFO)
+
     dp = Dispatcher()
-    dp.include_routers(commands.router_commands, new_order.router_new_order)
+    dp.include_router(main_router)
 
     bot = Bot(
-        token=TOKEN,
+        token=settings.BOT_TOKEN,
         default=DefaultBotProperties(
             parse_mode=ParseMode.HTML, link_preview_is_disabled=True
         ),
