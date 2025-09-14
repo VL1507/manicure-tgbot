@@ -38,7 +38,9 @@ async def get_available_slots(date: date, work_duration: int) -> list[tuple[str,
             booked_intervals.append((start_time_minutes, end_time_minutes))
 
         available_slots: list[tuple[str, str]] = []
-        work_start_minutes = WORK_TIME_START * 60
+        work_start_minutes = max(
+            WORK_TIME_START * 60, datetime.now().hour * 60 + datetime.now().minute
+        )
         work_end_minutes = WORK_TIME_END * 60
 
         for start_minutes in range(
