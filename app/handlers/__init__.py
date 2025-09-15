@@ -2,8 +2,14 @@ __all__ = ("router",)
 
 from aiogram import Router
 
-from app.handlers import choice_service
-from handlers import other_message, cancel, start, choice_day, back_from_date
+from handlers import (
+    other_message,
+    cancel,
+    start,
+    choice_day,
+    back_from_date,
+    choice_service,
+)
 
 router = Router(name=__name__)
 
