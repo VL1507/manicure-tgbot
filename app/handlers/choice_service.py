@@ -2,7 +2,7 @@ from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
-from infrastructure.database.requests import get_services, get_service_by_id
+from infrastructure.database.requests import get_services
 from keyboards import kb
 from states.order import Order
 
@@ -49,7 +49,7 @@ async def service_callback_handler(callback: CallbackQuery, state: FSMContext):
         await callback.message.edit_text(
             text, reply_markup=kb.service_keyboard(not_selected_services)
         )
-    except Exception as e:
+    except Exception:
         await callback.message.answer(
             text, reply_markup=kb.service_keyboard(not_selected_services)
         )
