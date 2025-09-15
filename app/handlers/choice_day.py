@@ -1,7 +1,7 @@
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
-from infrastructure.database.requests import get_service_by_id
+from infrastructure.database.funcs import get_service_by_id
 from keyboards import kb
 from states.order import Order
 

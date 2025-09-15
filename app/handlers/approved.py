@@ -3,7 +3,7 @@ import datetime as dt
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
-from infrastructure.database.requests import save_appointments
+from infrastructure.database.funcs import save_appointments
 from keyboards import kb
 from states.order import Order
 

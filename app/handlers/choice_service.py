@@ -1,7 +1,7 @@
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
-from infrastructure.database.requests import get_services
+from infrastructure.database.funcs import get_services
 from keyboards import kb
 from states.order import Order
 
@@ -20,6 +20,7 @@ async def order_callback_handler(callback: CallbackQuery, state: FSMContext):
 
     selected_services_id = []
     await state.update_data({"selected_services_id": selected_services_id})
+    await callback.message.delete()
 
 
 @router.callback_query(F.data.startswith("service_"), Order.service)
