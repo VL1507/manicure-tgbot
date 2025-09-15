@@ -157,3 +157,21 @@ async def time_keyboard(
     )
 
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+
+
+def booking_keyboard() -> InlineKeyboardMarkup:
+    inline_keyboard = []
+
+    inline_keyboard.append(
+        [InlineKeyboardButton(text="Подтвердить", callback_data="approved")]
+    )
+
+    inline_keyboard.append(
+        [InlineKeyboardButton(text="Назад", callback_data="back_from_booking")]
+    )
+
+    inline_keyboard.append(
+        [InlineKeyboardButton(text="Отмена", callback_data="cancel")]
+    )
+
+    return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
