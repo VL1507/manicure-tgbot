@@ -2,8 +2,7 @@ from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardButton
 from infrastructure.database.models import Services
 from infrastructure.database.requests import get_available_slots
-from constants import WORK_TIME_START, WORK_TIME_END
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 
 start = InlineKeyboardMarkup(
     inline_keyboard=[[InlineKeyboardButton(text="Записаться", callback_data="order")]]
@@ -66,12 +65,8 @@ async def days_keyboard(offset_days: int, work_duration: int):
         if len(available_slots) > 0:
             available_dates.append(current_date)
 
-    # if len(available_dates) == 0:
-    #     return await days_keyboard(offset_days + 7, work_duration)
+    # print(available_dates)
 
-    print(available_dates)
-    
-    
     date_buttons = []
     for date_ in dates:
         if date_ in available_dates:
@@ -87,7 +82,8 @@ async def days_keyboard(offset_days: int, work_duration: int):
             date_buttons.append(
                 [
                     InlineKeyboardButton(
-                        text=date_.strftime("%d.%m.%Y") + " ❌", callback_data="no_slots"
+                        text=date_.strftime("%d.%m.%Y") + " ❌",
+                        callback_data="no_slots",
                     )
                 ]
             )
@@ -97,19 +93,27 @@ async def days_keyboard(offset_days: int, work_duration: int):
         new_offset = max(0, offset_days - 7)
         navigation_buttons.append(
             InlineKeyboardButton(
-                text="◀️ Назад", callback_data=f"date_navigation_{new_offset}"
+                text="◀️◀️", callback_data=f"date_navigation_{new_offset}"
             )
         )
 
-    if offset_days < 365:
-        new_offset = min(offset_days + 7, 365)
+    if offset_days < 358:
+        new_offset = min(offset_days + 7, 358)
         navigation_buttons.append(
             InlineKeyboardButton(
-                text="Вперед ▶️", callback_data=f"date_navigation_{new_offset}"
+                text="▶️▶️", callback_data=f"date_navigation_{new_offset}"
             )
         )
 
     inline_keyboard.extend(date_buttons)
     inline_keyboard.append(navigation_buttons)
+
+    inline_keyboard.append(
+        [InlineKeyboardButton(text="Назад", callback_data="back_from_date")]
+    )
+
+    inline_keyboard.append(
+        [InlineKeyboardButton(text="Отмена", callback_data="cancel")]
+    )
 
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
