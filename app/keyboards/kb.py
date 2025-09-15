@@ -2,7 +2,7 @@ from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardButton
 from infrastructure.database.models import Services
 from infrastructure.database.requests import get_available_slots
-from datetime import datetime, timedelta
+import datetime as dt
 
 start = InlineKeyboardMarkup(
     inline_keyboard=[[InlineKeyboardButton(text="Записаться", callback_data="order")]]
@@ -48,15 +48,15 @@ def service_keyboard(services: list[Services]) -> InlineKeyboardMarkup:
 async def days_keyboard(offset_days: int, work_duration: int):
     inline_keyboard = []
 
-    target_date = datetime.now().date() + timedelta(days=offset_days)
+    target_date = dt.datetime.now().date() + dt.timedelta(days=offset_days)
 
     dates = []
     available_dates = []
 
     for i in range(7):
-        current_date = target_date + timedelta(days=i)
+        current_date = target_date + dt.timedelta(days=i)
 
-        if current_date > datetime.now().date() + timedelta(days=365):
+        if current_date > dt.datetime.now().date() + dt.timedelta(days=365):
             continue
 
         dates.append(current_date)
@@ -74,7 +74,7 @@ async def days_keyboard(offset_days: int, work_duration: int):
                 [
                     InlineKeyboardButton(
                         text=date_.strftime("%d.%m.%Y"),
-                        callback_data=f"date_{date_.strftime('%Y-%m-%d')}",
+                        callback_data=f"choice_date_{date_.strftime('%Y-%m-%d')}",
                     )
                 ]
             )
@@ -110,6 +110,45 @@ async def days_keyboard(offset_days: int, work_duration: int):
 
     inline_keyboard.append(
         [InlineKeyboardButton(text="Назад", callback_data="back_from_date")]
+    )
+
+    inline_keyboard.append(
+        [InlineKeyboardButton(text="Отмена", callback_data="cancel")]
+    )
+
+    return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+
+
+async def time_keyboard(
+    date_: dt.date, selected_services: list[Services]
+) -> InlineKeyboardMarkup:
+    inline_keyboard = []
+
+    available_slots = await get_available_slots(
+        date_, sum([s.duration_minutes for s in selected_services])
+    )
+
+    if available_slots:
+        for slot in available_slots:
+            inline_keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        text=slot[0] + " - " + slot[1],
+                        callback_data=f"book_{date_.strftime('%Y-%m-%d')}_{slot[0]}_{slot[1]}",
+                    )
+                ]
+            )
+    else:
+        inline_keyboard.append(
+            [
+                InlineKeyboardButton(
+                    text="Нет доступных слотов", callback_data="no_slots"
+                )
+            ]
+        )
+
+    inline_keyboard.append(
+        [InlineKeyboardButton(text="Назад", callback_data="back_from_time")]
     )
 
     inline_keyboard.append(
