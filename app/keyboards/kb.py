@@ -139,6 +139,7 @@ async def time_keyboard(
                 ]
             )
     else:
+        # по идее это не может произойти. оставил на случай, если где-то ошибся
         inline_keyboard.append(
             [
                 InlineKeyboardButton(
