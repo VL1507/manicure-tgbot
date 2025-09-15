@@ -5,10 +5,12 @@ from aiogram.types import CallbackQuery
 from infrastructure.database.requests import get_service_by_id
 from keyboards import kb
 from states.order import Order
+import datetime as dt
 
 router = Router(name=__name__)
 
 
+@router.callback_query(F.data == "back_from_time", Order.time)
 @router.callback_query(F.data.startswith("date_navigation_"), Order.day)
 @router.callback_query(F.data == "next_from_service", Order.service)
 async def next_from_service_handler(callback: CallbackQuery, state: FSMContext):
@@ -52,4 +54,25 @@ async def no_slots_handler(callback: CallbackQuery, state: FSMContext):
     )
 
 
+@router.callback_query(F.data.startswith("choice_date_"), Order.day)
+async def choice_date_handler(callback: CallbackQuery, state: FSMContext):
+    date_str = callback.data.split("_")[-1]
+    selected_date = dt.datetime.strptime(date_str, "%Y-%m-%d").date()
 
+    selected_services = await state.get_value("selected_services")
+
+    await state.update_data({"selected_date": selected_date})
+
+    await state.set_state(Order.time)
+
+    text = (
+        "Запись на "
+        + selected_date.strftime("%d.%m.%Y")
+        + " на услугу(и): "
+        + ", ".join([s.name for s in selected_services if s is not None])
+        + "\nВыберите время:"
+    )
+
+    await callback.message.answer(
+        text, reply_markup=await kb.time_keyboard(selected_date, selected_services)
+    )
