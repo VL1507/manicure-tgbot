@@ -9,6 +9,7 @@ from handlers import (
     choice_day,
     back_from_date,
     choice_service,
+    choice_time,
 )
 
 router = Router(name=__name__)
@@ -19,6 +20,7 @@ router.include_routers(
     start.router,
     choice_day.router,
     back_from_date.router,
+    choice_time.router,
 )
 
 
