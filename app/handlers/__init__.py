@@ -10,6 +10,7 @@ from handlers import (
     back_from_date,
     choice_service,
     choice_time,
+    approved,
 )
 
 router = Router(name=__name__)
@@ -21,6 +22,7 @@ router.include_routers(
     choice_day.router,
     back_from_date.router,
     choice_time.router,
+    approved.router,
 )
 
 
