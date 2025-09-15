@@ -43,3 +43,13 @@ async def next_from_service_handler(callback: CallbackQuery, state: FSMContext):
         ),
     )
     await callback.message.delete()
+
+
+@router.callback_query(F.data == "no_slots", Order.day)
+async def no_slots_handler(callback: CallbackQuery, state: FSMContext):
+    await callback.answer(
+        "К сожалению, на выбранную дату нет доступных мест.", show_alert=True
+    )
+
+
+
