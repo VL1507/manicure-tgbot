@@ -29,7 +29,7 @@ async def back_from_date(callback: CallbackQuery, state: FSMContext):
         await callback.message.edit_text(
             text, reply_markup=kb.service_keyboard(not_selected_services)
         )
-    except Exception as e:
+    except Exception:
         await callback.message.answer(
             text, reply_markup=kb.service_keyboard(not_selected_services)
         )
