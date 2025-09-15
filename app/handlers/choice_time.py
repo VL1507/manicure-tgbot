@@ -1,11 +1,11 @@
+import datetime as dt
+
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
-
 from infrastructure.database.models import Services
 from keyboards import kb
 from states.order import Order
-import datetime as dt
 
 router = Router(name=__name__)
 

@@ -1,8 +1,9 @@
+import datetime as dt
+
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardButton
 from infrastructure.database.models import Services
 from infrastructure.database.requests import get_available_slots
-import datetime as dt
 
 start = InlineKeyboardMarkup(
     inline_keyboard=[[InlineKeyboardButton(text="Записаться", callback_data="order")]]

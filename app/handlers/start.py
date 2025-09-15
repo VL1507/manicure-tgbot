@@ -2,9 +2,7 @@ from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-
 from keyboards import kb
-
 
 router = Router(name=__name__)
 

@@ -3,7 +3,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from keyboards import kb
 
-
 router = Router(name=__name__)
 
 

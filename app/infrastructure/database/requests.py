@@ -1,10 +1,10 @@
-from sqlalchemy import select
-
 import datetime as dt
+
+from constants import SLOT_DURATION, WORK_TIME_END, WORK_TIME_START
+from sqlalchemy import select
 
 from infrastructure.database.accessor import get_db_session
 from infrastructure.database.models import Appointments, Services, ServiceToAppointments
-from constants import WORK_TIME_START, WORK_TIME_END, SLOT_DURATION
 
 
 async def get_services() -> list[Services]:
